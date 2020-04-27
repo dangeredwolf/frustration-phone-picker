@@ -1,3 +1,3 @@
 # frustration-phone-picker
  
-[test test test test](https://www.reddit.com/r/badUIbattles/comments/e74mjz/please_select_a_country_if_you_can_find_it/)
+[test test test test](https://www.reddit.com/r/badUIbattles/comments/g8rncu/i_have_created_the_easiest_phone_number_picker/)
