@@ -1,0 +1,240 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+				 
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+		<script>
+
+		const areaCodes = [
+			201,202,203,204,205,206,207,208,209,210,212,213,214,215,216,217,218,219,220,223,224,225,226,228,229,231,234,236,239,240,242,246,248,249,250,251,252,253,254,256,260,262,264,267,268,269,270,272,276,279,281,283,284,289,
+			 301,302,303,304,305,306,307,308,309,310,312,313,314,315,316,317,318,319,320,321,323,325,327,330,331,332,334,336,337,339,340,341,343,345,346,347,351,352,354,360,361,364,365,367,368,380,382,385,386,387,
+			 401,402,403,404,405,406,407,408,409,410,412,413,414,415,416,417,418,419,423,424,425,430,431,432,434,435,437,438,440,441,442,443,445,450,458,463,468,469,470,473,475,476,477,478,479,480,484,501,502,503,504,505,506,507,508,509,510,512,513,514,515,516,517,518,519,520,530,531,534,539,540,541,548,551,559,561,562,563,564,566,567,570,571,573,574,575,579,580,581,584,585,586,587,
+			 601,602,603,604,605,606,607,608,609,610,612,613,614,615,616,617,618,619,620,622,623,626,628,629,630,631,636,639,640,641,646,647,649,650,651,657,658,659,660,661,662,664,667,669,670,671,672,678,679,680,681,682,684,689,
+			 701,702,703,704,705,706,707,708,709,710,712,713,714,715,716,717,718,719,720,721,724,725,726,727,731,732,734,737,740,742,743,747,753,754,757,758,750,762,763,765,767,769,770,772,773,774,775,778,779,780,781,782,784,785,786,787,800,801,802,803,804,805,806,807,808,809,810,812,813,814,815,816,817,818,819,820,825,828,829,830,831,832,833,838,839,843,844,845,847,848,849,850,854,855,856,857,858,859,860,862,863,864,865,866,868,869,870,872,873,876,877,878,879,888,900,901,902,903,904,905,906,907,908,909,910,912,913,914,915,916,917,918,919,920,925,927,928,929,930,931,932,934,935,936,937,938,939,940,941,947,949,951,952,954,956,959,970,971,972,973,978,979,980,984,985,986,989
+		]
+
+		let exchanges = [];
+
+		let numbers = [];
+		let d;
+		let areaCode = 201;
+		let exchangeCode = 200;
+
+		// simple function that creates an element in jQuery faster
+
+		const make = function(a) {
+			return $(document.createElement(a));
+		}
+
+		function formatSubscriberNum(num) {
+			if (num < 10) {
+				return "000" + num;
+			} else if (num < 100) {
+				return "00" + num;
+			} else if (num < 1000) {
+				return "0" + num;
+			} else {
+				return "" + num;
+			}
+		}
+
+		function populateAreaCode(code) {
+			for (let i = 200; i <= 999; i++) { // NANP only permits 200 and above for both area codes and NXX
+				switch(i) {
+					case 950: // 950 is reserved for feature groups. I don't know what that is, but you can read about it: https://en.wikipedia.org/wiki/feature_group
+					case 958: // 958 is reserved as a local test NXX in NANP
+					case 959: // 959 is reserved as a long distance test NXX in NANP
+
+					case 700: // 700 is reserved in the NANP and I really don't know why. probably some stupid bullshit AT&T pulled back when they were a monopoly
+
+					case 555: // 555 is reserved for fictional numbers
+					// just kidding, that'd be too easy. 555 numbers do exist but they're not assigned to customers. 555-1212 is directory assistance, but I cba to implement that if it isn't a number belonging to anyone anyway. In fact, the only numbers that are assigned to be fictitious are 555-0100 to 555-0199. The rest are unassigned and I doubt it's gonna happen soon.
+
+					case 211: // to reduce confusion, NANP doesn't let the 2nd and 3rd digits both be 1 in NXX, to reduce confusion with service numbers like 911
+					case 311:
+					case 411:
+					case 511:
+					case 611:
+					case 711:
+					case 811:
+					case 911:
+
+						break;
+
+					default:
+						for (let j = 0000; j <= 9999; j++) {
+							numbers.push("(" + code + ") " + i + "-" + formatSubscriberNum(j));
+						}
+				}
+			}
+		}
+
+		function nextExchangeCode() {
+			exchangeCode++;
+
+			switch(exchangeCode) {
+				case 950: // 950 is reserved for feature groups. I don't know what that is, but you can read bout it: https://en.wikipedia.org/wiki/feature_group
+				case 958: // 958 is reserved as a local test NXX in NANP
+				case 959: // 959 is reserved as a long distance test NXX in NANP
+
+				case 700: // 700 is reserved in the NANP and I really don't know why. probably some stupid bullshit AT&T pulled back when they were a monopoly
+
+				case 555: // 555 is reserved for fictional numbers
+				// just kidding, that'd be too easy. 555 numbers do exist but they're not assigned to customers. 555-1212 is directory assistance, but I cba to implement that if it isn't a number belonging to anyone anyway. In fact, the only numbers that are assigned to be fictitious are 555-0100 to 555-0199. The rest are unassigned and I doubt it's gonna happen soon.
+
+				case 211: // to reduce confusion, NANP doesn't let the 2nd and 3rd digits both be 1 in NXX, to reduce confusion with service numbers like 911
+				case 311:
+				case 411:
+				case 511:
+				case 611:
+				case 711:
+				case 811:
+				case 911:
+
+				case areaCode: // NANP doesn't allow a number with the same exchange number as area code
+					console.log("Skipping invalid exchange code");
+					nextExchangeCode(exchangeCode); // just skip and go to next one, try again
+					return;
+
+				
+			}
+
+			if (exchangeCode < 201) exchangeCode = 201;
+			if (exchangeCode >= 1000) {
+				if (areaCode >= 989) { // can't be higher than maximum
+					exchangeCode--; // just repeat the last 10000 numbers if there's nothing more to load
+				} else {
+					while (true) {
+						areaCode++;
+						if (areaCodes.includes(areaCode)) {
+							break;
+						}
+					}
+					exchangeCode = 200;
+				}
+				
+			}
+			
+			for (let j = 0000; j <= 9999; j++) {
+				numbers.push("(" + areaCode + ") " + exchangeCode + "-" + formatSubscriberNum(j));
+			}
+
+		}
+
+		function loadInNewNumbers() {
+			let code = areaCode;
+
+			d.empty();
+			d.append(make("li").addClass("disabled selected").append(make("span").text("Select phone number...")));
+
+			numbers = [];
+			nextExchangeCode(code);
+
+			numbers.forEach(
+				a => {
+					d.append(make("li").append(make("span").text(a)))
+				}
+			)
+		}
+
+
+		function addNumbers() {
+
+			let c = $("#country");
+
+
+			c.empty().append(
+				make("option")
+					.attr("value", "")
+					.text("Select phone number...")
+					.attr("disabled","true")
+					.attr("selected","true")
+			)
+
+			it = 0;
+
+			// init materialize <select>
+			M.FormSelect.init(document.querySelectorAll('select'), {});
+
+			d = $(".select-dropdown");
+
+			d.on("scroll", () => {
+				if ($(".dropdown-content").scrollTop() > (($(".dropdown-content").children().first().height() * $(".dropdown-content").children().length) - 480)) {
+					loadInNewNumbers();
+					$(".dropdown-content").scrollTop(0);
+				}
+			})
+
+			loadInNewNumbers();
+
+		}
+
+		document.addEventListener('DOMContentLoaded', function() {
+
+			addNumbers();
+		});
+
+		</script>
+
+		<style>
+			.dropdown-content li>a, .dropdown-content li>span {
+				color:#333!important;
+			}
+
+			.select-dropdown li.disabled, .select-dropdown li.disabled>span, .select-dropdown li.optgroup {
+				color:rgba(0,0,0,0.3)!important;
+			}
+
+			form {
+				margin-top:50px;
+				max-width:500px;
+				width:100%;
+				left:50%!important;
+				margin-left:-250px!important;
+				position:absolute;
+			}
+
+		</style>
+	</head>
+
+	<body>
+		
+	<div class="row">
+		<form class="col s12">
+			<div class="row">
+				<div class="input-field col s6">
+					<input id="first_name" type="text" class="validate">
+					<label for="first_name">First Name</label>
+				</div>
+				<div class="input-field col s6">
+					<input id="last_name" type="text" class="validate">
+					<label for="last_name">Last Name</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-field col s12">
+					<input id="email" type="email" class="validate">
+					<label for="email">Email</label>
+				</div>
+			</div>
+			<div class="input-field col s12">
+			<select id="country">
+				<option value="" disabled selected>Select your phone number...</option>
+			</select>
+			<label>Phone Number</label>
+			</div>
+		<label>
+			<input type="checkbox" class="filled-in" checked="checked" />
+			<span>I do not agree with the <a href="#">Terms and Conditions</a></span>
+		</label>
+		<br>
+		<button class="btn" style="float:right">Continue</button>
+		</form>
+	</div>
+	</body>
+</html>
